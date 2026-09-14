@@ -45,6 +45,7 @@ TRIM_M             = 100
 INITIAL_DAYS       = None   # None = all trips; set e.g. 90 to limit
 STATEMENT_TIMEOUT  = "30s"
 SPEED_SMOOTH_WIN   = 5      # rolling average window for gnss speed
+COORD_PRECISION    = 6      # decimal places (~11cm) — plenty for map display, cuts file size a lot
 
 # Braking detection — GNSS speed is pre-smoothed, so peak decels are lower
 # than raw wheel-rotation data would show.
@@ -591,7 +592,7 @@ def detect_crash_events_api(raw_rows, raw_cols, d1_rows, d1_cols,
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [float(fix["longitude"]), float(fix["latitude"])],
+                    "coordinates": [round(float(fix["longitude"]), COORD_PRECISION), round(float(fix["latitude"]), COORD_PRECISION)],
                 },
                 "properties": {
                     "event_type":           "crash",
@@ -700,8 +701,8 @@ def rows_to_features(gnss_rows, gnss_cols, raw_rows, raw_cols,
             "geometry": {
                 "type": "LineString",
                 "coordinates": [
-                    [float(a["longitude"]), float(a["latitude"])],
-                    [float(b["longitude"]), float(b["latitude"])],
+                    [round(float(a["longitude"]), COORD_PRECISION), round(float(a["latitude"]), COORD_PRECISION)],
+                    [round(float(b["longitude"]), COORD_PRECISION), round(float(b["latitude"]), COORD_PRECISION)],
                 ],
             },
             "properties": {
@@ -709,11 +710,7 @@ def rows_to_features(gnss_rows, gnss_cols, raw_rows, raw_cols,
                 "db_trip_id":        db_trip_id,
                 "timestamp":         a["timestamp"].isoformat() if a["timestamp"] else None,
                 "Speed":             round(speed_kmh, 1),
-                "marker":            0,
-                "Acc Y (g)":         0,
                 "road_quality":      road_quality,
-                "hrot_diff":         0,
-                "sample_diff":       0,
                 "time_diff_s":       round(time_diff_s, 3) if time_diff_s is not None else None,
                 "gps_distance_m":    round(dist, 1),
                 "wheel_diameter_mm": wheel_diam_mm,
