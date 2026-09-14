@@ -9,7 +9,7 @@ export const CONFIG = {
   MAP_STYLE: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
 
   // TODO: set to your city's center [lng, lat].
-  MAP_CENTER: [9.7386, 52.3744],
+  MAP_CENTER: [2.170047, 41.387016],
   MAP_ZOOM: 13,
 
   // Folder the map fetches trips.geojson / road_segments_averaged.json from.
